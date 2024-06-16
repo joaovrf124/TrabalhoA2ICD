@@ -1,11 +1,16 @@
 from bs4 import BeautifulSoup
 import requests
 
-def getWeb(url):
+def getWeb(url, comments):
     page = requests.get(url)
-
     soup = BeautifulSoup(page.text, "lxml")
-    price = soup.find_all("div", class_="lister-item-content")
-    return price
+    divContent = soup.find_all("div", class_="content")
 
-print(getWeb("https://www.imdb.com/title/tt16283824/reviews/?ref_=tt_ov_rt"))
+    for content_div in divContent:
+        i = 0
+        text_div = content_div.find("div", class_="text show-more__control")
+        if text_div:
+            comments.insert(i, text_div.text.strip())
+            i += 1
+    
+    return comments
